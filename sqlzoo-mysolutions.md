@@ -81,7 +81,23 @@ WHERE name=capital
 ```
 SELECT name
 FROM world
-WHERE capital=concat(name,' City')
+WHERE capital=CONCAT(name,' City')
 ```
 13.
+```
+SELECT capital, name
+FROM world
+WHERE capital LIKE CONCAT('%',name,'%')
+```
+14.
+```
+SELECT capital, name
+FROM world
+WHERE capital LIKE CONCAT(name,'%') AND capital != name
+```
+15.
+```
+SELECT name, REPLACE(capital,name,'') AS extension
+FROM world
+WHERE capital LIKE CONCAT(name,'%') AND capital != name
 ```
