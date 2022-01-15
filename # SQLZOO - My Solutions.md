@@ -751,7 +751,7 @@ FROM nss x
 GROUP BY institution
 ```
 
-## 9 Window Function
+## 9- Window Function
 
 1.
 ```
@@ -786,4 +786,58 @@ RANK() OVER (PARTITION BY constituency ORDER BY votes DESC) AS posn
 ORDER BY posn, constituency
 ```
 5.
+```
+SELECT constituency, party
+FROM (SELECT constituency, party, votes,
+RANK() OVER (PARTITION BY constituency ORDER BY votes DESC) AS posn
+FROM ge
+WHERE constituency BETWEEN 'S14000021' AND 'S14000026'
+AND yr  = 2017
+ORDER BY posn, constituency) x
+WHERE x.posn = 1
+```
+6.
+```
+SELECT party, count(*)
+FROM (SELECT constituency, party
+FROM (SELECT constituency, party, votes,
+RANK () OVER (PARTITION BY constituency ORDER BY votes DESC) AS posn
+FROM ge
+WHERE constituency LIKE 'S%'
+AND yr = 2017
+ORDER BY posn, constituency) x
+WHERE x.posn=1) y
+GROUP BY party
+```
+
+## 9+ COVID-19
+
+1.
+```
+SELECT name, DAY(whn),
+confirmed, deaths, recovered
+FROM covid
+WHERE name = 'Spain'
+AND MONTH(whn) = 3 AND YEAR(whn) = 2020
+ORDER BY whn
+```
+2.
+```
+SELECT name, DAY(whn), confirmed,
+LAG(confirmed, 1) OVER (PARTITION BY name ORDER BY whn) AS DayBefore
+FROM covid
+WHERE name = 'Italy'
+AND MONTH(whn) = 3 AND YEAR(whn) = 2020
+ORDER BY whn
+```
+3.
+```
+SELECT name, DAY(whn), confirmed -
+LAG(confirmed, 1) OVER (PARTITION BY name ORDER BY whn)
+FROM covid
+WHERE name = 'Italy'
+AND MONTH(whn) = 3 AND YEAR(whn) = 2020
+ORDER BY whn
+```
+4.
 ```
